@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books - eBook Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        .cart {
+            float: right;
+            padding: 15px;
+            background-color: #575757;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .book {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .book h3 {
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .book p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .book button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .book button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
+        /* Filters Section Styles */
+        .filters {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center elements horizontally */
+            margin: 20px;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .filters input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .filters label {
+            font-size: 16px;
+        }
+
+        .filters input[type="submit"], .filters .search-bar {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .filters input[type="submit"] {
+            background-color: #333;
+            color: white;
+        }
+
+        .filters input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        .filters .search-bar {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Our Collection of eBooks</h1>
+    </header>
+
+    <nav>
+        <a href="Home.html">Home</a>
+        <a href="querybook.html">Books</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
+    </nav>
+
+    <!-- Filters Section -->
+    <form method="get" action="http://localhost:9999/ebookshop/query">
+        <div class="filters">
+            <label>Choose an author:</label>
+            <input type="checkbox" name="author" value="Tan Ah Teck" />Ah Teck
+            <input type="checkbox" name="author" value="Mohammad Ali" />Ali
+            <input type="checkbox" name="author" value="Kumar" />Kumar
+
+            <input type="text" class="search-bar" id="search-bar" placeholder="Search for books..." />
+            <input type="submit" value="Search" />
+        </div>
+    </form>
+
+    <div class="container" id="book-list">
+        <!--  Books dsiply here -->
+    </div>
+
+    <footer>
+        <p>&copy; 2025 eBook Store | All rights reserved.</p>
+    </footer>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function updateCart() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function addToCart(bookTitle, price) {
+            cart.push({ title: bookTitle, price: price });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+            alert(bookTitle + " has been added to your cart!");
+        }
+
+        window.onload = function () {
+            updateCart();
+
+            const books = [
+                { title: "Solar system", author: "Tan Ah Teck", price: 10.99, category: "classic", image: "https://m.media-amazon.com/images/I/81wkQsjbo5L._AC_UL320_.jpg" },
+                { title: "The Little Book of Mindfulness", author: "Mohammad Ali", price: 8.99, category: "classic", image: "https://m.media-amazon.com/images/I/71bt4N3tzAL._AC_UL320_.jpg" },
+                { title: "Amazon Unbound", author: "Kumar", price: 9.99, category: "fiction", image: "https://m.media-amazon.com/images/I/71cYdt99HxL._AC_UL320_.jpg" },
+                { title: "BARACK OBAMA", author: "Tan Ah Teck", price: 7.99, category: "classic", image: "https://m.media-amazon.com/images/I/91+NBrXG-PL._AC_UL320_.jpg" },
+                { title: "ADUL COLORING BOOK", author: "Mohammad Ali", price: 11.49, category: "classic", image: "https://m.media-amazon.com/images/I/71R1dKjpyoL._AC_UL320_.jpg" },
+                { title: "THE ADOPTED DRAGON", author: "Kumar", price: 12.99, category: "classic", image: "https://m.media-amazon.com/images/I/71x9AlE-OrL._AC_UL320_.jpg" },
+                { title: "BOOK CLUO", author: "Tan Ah Teck", price: 9.49, category: "fiction", image: "https://m.media-amazon.com/images/I/712uz1sSWAL._AC_UL320_.jpg" },
+                { title: "A DRAGON HAS TO PERSEVRE", author: "Mohammad Ali", price: 10.49, category: "fiction", image: "https://m.media-amazon.com/images/I/71taowAjG+L._AC_UL320_.jpg" },
+                { title: "THE SUBTLE ART OF NOT GIVE A F*CK", author: "Kumar", price: 8.99, category: "fiction", image: "https://m.media-amazon.com/images/I/71QKQ9mwV7L._AC_UL320_.jpg" },
+                { title: "The Psychology of Money", author: "Tan Ah Teck", price: 9.99, category: "classic", image: "https://m.media-amazon.com/images/I/81wZXiu4OiL._AC._SR360,460.jpg" },
+                { title: "Atomic Habit", author: "Mohammad Ali", price: 9.49, category: "fiction", image: "https://m.media-amazon.com/images/I/81F90H7hnML._AC._SR360,460.jpg" },
+                { title: "THE WILD ROBOT PROTECTS", author: "Kumar", price: 7.99, category: "classic", image: "https://m.media-amazon.com/images/I/71gCPEf-MiL._AC._SR360,460.jpg" },
+                { title: "THE FEARLESSORGANIZATION", author: "Tan Ah Teck", price: 15.99, category: "fiction", image: "https://m.media-amazon.com/images/I/716QNCYUMAL._AC._SR360,460.jpg" },
+                { title: ">BILL GATES", author: "Mohammad Ali", price: 8.49, category: "classic", image: "https://m.media-amazon.com/images/I/71yR+jQLqXL._AC._SR360,460.jpg" },
+                { title: "THE LET THEM", author: "Kumar", price: 8.99, category: "classic", image: "https://m.media-amazon.com/images/I/91I1KDnK1kL._AC._SR360,460.jpg" }
+            ];
+
+            const bookList = document.getElementById('book-list');
+
+            // Display all books
+            function displayBooks(filteredBooks) {
+                bookList.innerHTML = '';
+                filteredBooks.forEach(book => {
+                    let bookItem = document.createElement('div');
+                    bookItem.classList.add('book');
+                    bookItem.innerHTML = `
+                        <img src="${book.image}" alt="${book.title}">
+                        <h3>${book.title}</h3>
+                        <p>By ${book.author}</p>
+                        <p><strong>$${book.price.toFixed(2)}</strong></p>
+                        <button onclick="addToCart('${book.title}', ${book.price})">Add to Cart</button>
+                    `;
+                    bookList.appendChild(bookItem);
+                });
+            }
+
+            // Initial display beforw Filter
+            displayBooks(books);
+
+            // Filter books by author and search 
+            document.getElementById('search-bar').addEventListener('input', function() {
+                let searchTerm = this.value.toLowerCase();
+                let selectedAuthors = Array.from(document.querySelectorAll('.filters input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+                
+                let filteredBooks = books.filter(book => {
+                    let matchesSearch = book.title.toLowerCase().includes(searchTerm);
+                    let matchesAuthor = selectedAuthors.length === 0 || selectedAuthors.includes(book.author);
+                    return matchesSearch && matchesAuthor;
+                });
+
+                displayBooks(filteredBooks);
+            });
+
+            // Make books available globally
+            window.books = books;
+        };
+    </script>
+
+</body>
+</html>

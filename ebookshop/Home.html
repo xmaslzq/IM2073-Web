@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBook Store</title>
+    <style>
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #444;
+            padding: 10px 20px;
+}
+
+        .user-name {
+                color: white;
+                font-size: 16px;
+                margin-left: 30px;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        .cart {
+            float: right;
+            padding: 15px;
+            background-color: #575757;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .sign-out-btn {
+            float: right;
+            padding: 15px 30px;
+            background-color: #FF4C4C;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 7px;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+        .sign-out-btn:hover {
+            background-color: #D13D3D;
+            }
+
+        .hero {
+            background-image: url('https://via.placeholder.com/1500x500'); /* Placeholder image */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+            margin: 0;
+            color: #333;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .main-content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .book-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .book-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .book-item h3 {
+            margin: 15px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .book-item p {
+            color: #777;
+        }
+
+        .book-item button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .book-item button:hover {
+            background-color: #555;
+        }
+           .book-item img {
+        width: 250px; /* Set a fixed width */
+        height: 350px; /* Set a fixed height */
+        object-fit: cover; /* Ensures the image covers the area without distortion */
+        border-radius: 8px;
+    }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Team2 Production eBook Store</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="Home.html">Home</a>
+        <a href="querybook.html">Books</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
+        <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
+        <span class="user-name" id="username">Welcome, User</span>
+
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to the eBook Store</h1>
+        <p>Explore a world of knowledge, stories, and adventures at your fingertips!</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Featured Books</h2>
+        <div class="book-list">
+            <div class="book-item">
+                <img src="https://m.media-amazon.com/images/I/41vSaeWHTML._SY445_SX342_.jpg" alt="Book 1">
+                <h3>Book Title 1</h3>
+                <p>Price: $9.99</p>
+                <button onclick="addToCart({title: 'Book Title 1', price: 9.99})">Add to Cart</button>
+            </div>
+
+            <div class="book-item">
+                <img src="https://images.booksense.com/images/541/760/9798323760541.jpg" alt="Book 2">
+                <h3>Book Title 2</h3>
+                <p>Price: $12.99</p>
+                <button onclick="addToCart({title: 'Book Title 2', price: 12.99})">Add to Cart</button>
+            </div>
+
+            <div class="book-item">
+                <img src="https://m.media-amazon.com/images/I/81E2JVAndfL._AC_UF1000,1000_QL80_.jpg" alt="Book 3">
+                <h3>Book Title 3</h3>
+                <p>Price: $7.99</p>
+                <button onclick="addToCart({title: 'Book Title 3', price: 7.99})">Add to Cart</button>
+            </div>
+
+            <div class="book-item">
+                <img src="https://m.media-amazon.com/images/I/611JRVXAbHL._SX342_SY445_.jpg" alt="Book 4">
+                <h3>Book Title 4</h3>
+                <p>Price: $14.99</p>
+                <button onclick="addToCart({title: 'Book Title 4', price: 14.99})">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 eBook Store | All rights reserved.</p>
+    </footer>
+
+    <script>
+        let cart = [];
+
+        function updateCart() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function addToCart(book) {
+            cart.push(book);
+            localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to localStorage
+            updateCart();
+        }
+
+        // Sign-out functionality
+        const signOutBtn = document.getElementById('signOutBtn');
+        signOutBtn.addEventListener('click', () => {
+            localStorage.removeItem('user'); // Clear user session
+            window.location.href = 'login.html'; // Redirect to login page
+        });
+
+        window.onload = function() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            updateCart();
+        };
+     
+        
+      
+    </script>
+
+</body>
+</html>

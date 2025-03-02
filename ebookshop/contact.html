@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - eBook Store</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        .cart {
+            float: right;
+            padding: 15px;
+            background-color: #575757;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .container {
+            width: 60%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        .contact-details {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .contact-details p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .contact-details a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+
+        .feedback-form {
+            margin-top: 30px;
+        }
+
+        .feedback-form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .feedback-form input, 
+        .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .feedback-form button {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .feedback-form button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Contact Us</h1>
+    </header>
+
+    <nav>
+        <a href="Home.html">Home</a>
+        <a href="querybook.html">Books</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
+    </nav>
+
+    <div class="container">
+        <h2>Get in Touch</h2>
+        <p>We’d love to hear from you! Feel free to reach out with any questions or feedback.</p>
+
+        <div class="contact-details">
+            <p><strong>Email:</strong> <a href="mailto:support@ebookstore.com">support@ebookstore.com</a></p>
+            <p><strong>Phone:</strong> +1 234 567 890</p>
+            <p><strong>Address:</strong> 123 Book Street, Library City, BK 56789</p>
+        </div>
+
+        <div class="feedback-form">
+            <h3>Leave a Feedback</h3>
+            <form id="feedbackForm">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="message">Your Message:</label>
+                <textarea id="message" rows="5" required></textarea>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 eBook Store | All rights reserved.</p>
+    </footer>
+
+    <script>
+        let cart = [];
+
+        function updateCart() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        window.onload = function() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            updateCart();
+        };
+
+        document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let message = document.getElementById('message').value;
+
+            if (name && email && message) {
+                alert("Thank you for your feedback, " + name + "!");
+                document.getElementById('feedbackForm').reset();
+            } else {
+                alert("Please fill in all fields.");
+            }
+        });
+    </script>
+
+</body>
+</html>

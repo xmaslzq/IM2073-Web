@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - eBook Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+        }
+        nav a {
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        main {
+            padding: 20px;
+        }
+        .cart-item {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .checkout-button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .checkout-button:hover {
+            background-color: #27ae60;
+        }
+        .input-field {
+            margin-bottom: 10px;
+        }
+        .input-field input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>eBook Store - Your Cart</h1>
+    </header>
+
+    <nav>
+        <a href="Home.html">Home</a>
+        <a href="querybook.html">Books</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
+    </nav>
+
+    <main>
+        <h2>Your Cart</h2>
+
+        <div id="cart-items"></div>
+
+        <h3>Total: $<span id="total-price">0.00</span></h3>
+
+        <div>
+            <h3>Checkout Information</h3>
+            <div class="input-field">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+            </div>
+            <div class="input-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="input-field">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" placeholder="Enter your phone number" required>
+            </div>
+        </div>
+
+        <button class="checkout-button" onclick="checkout()">Checkout</button>
+        <button class="checkout-button" onclick="removeSelectedItems()">Remove Selected Items</button>
+    </main>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function updateCartDisplay() {
+            let cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = '';
+
+            let totalPrice = 0;
+            cart.forEach((book, index) => {
+                let bookDiv = document.createElement('div');
+                bookDiv.classList.add('cart-item');
+                bookDiv.innerHTML = `
+                    <div>
+                        <h3>${book.title}</h3>
+                        <p>Price: $${book.price.toFixed(2)}</p>
+                    </div>
+                    <input type="checkbox" id="item-${index}">
+                `;
+                cartItemsDiv.appendChild(bookDiv);
+
+                totalPrice += book.price;
+            });
+
+            document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function removeSelectedItems() {
+            const itemsToRemove = [];
+            cart.forEach((book, index) => {
+                const checkbox = document.getElementById(`item-${index}`);
+                if (checkbox && checkbox.checked) {
+                    itemsToRemove.push(index);
+                }
+            });
+
+            // Remove selected items from the cart
+            itemsToRemove.reverse().forEach(index => {
+                cart.splice(index, 1);
+            });
+
+            localStorage.setItem('cart', JSON.stringify(cart)); // Update cart in localStorage
+            updateCartDisplay();
+        }
+
+        function checkout() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!name || !email || !phone) {
+                alert("Please fill in all the details before checking out.");
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert("Your cart is empty! Please add items before checking out.");
+            } else {
+                // For now, simulate a checkout success and clear the cart
+                alert(`Checkout successful!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nYour order is complete.`);
+                cart = [];
+                localStorage.setItem('cart', JSON.stringify(cart)); // Clear cart from localStorage
+                updateCartDisplay();
+            }
+        }
+
+        window.onload = function() {
+            updateCartDisplay();
+        };
+    </script>
+
+</body>
+</html>
