@@ -6,26 +6,27 @@
     <title>Books - eBook Store</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
         }
-
+        
         header {
             background-color: #333;
             color: white;
             padding: 20px 0;
             text-align: center;
         }
-
+        
         nav {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
             background-color: #444;
-            padding: 10px 0;
+            padding: 10px 20px;
         }
-
+        
         nav a {
             color: white;
             padding: 15px 30px;
@@ -33,66 +34,121 @@
             text-align: center;
             font-size: 16px;
         }
-
+        
         nav a:hover {
             background-color: #575757;
         }
-
+        
         .cart {
-            float: right;
             padding: 15px;
             background-color: #575757;
             color: white;
             border-radius: 5px;
+            text-decoration: none;
         }
-
+        
+        .sign-out-btn {
+            padding: 15px 30px;
+            background-color: #FF4C4C;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 7px;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+        
+        .sign-out-btn:hover {
+            background-color: #D13D3D;
+        }
+        
+        .user-name {
+            color: white;
+            font-size: 16px;
+            margin-left: 30px;
+        }
+        
         .container {
             width: 90%;
             margin: 20px auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
-
+        
         .book {
             background: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            transition: all 0.3s ease;
         }
-
+        
+        .book:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
         .book img {
-            max-width: 100%;
-            height: 200px;
+            width: 180px;
+            height: 250px;
             object-fit: cover;
             border-radius: 5px;
         }
-
-        .book h3 {
-            color: #333;
-            margin: 10px 0;
-        }
-
-        .book p {
-            color: #666;
-            font-size: 14px;
-        }
-
+        
         .book button {
             background-color: #333;
             color: white;
-            padding: 10px;
+            padding: 10px 15px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            margin-top: 10px;
             transition: background-color 0.3s;
         }
-
+        
         .book button:hover {
             background-color: #555;
         }
-
+        
+        .search-container {
+            margin: 20px auto;
+            width: 80%;
+            text-align: center;
+        }
+        
+        .search-input {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .search-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            margin: 40px 0;
+        }
+        
+        .no-results {
+            text-align: center;
+            font-size: 18px;
+            margin: 40px 0;
+            color: #777;
+        }
+        
         footer {
             background-color: #333;
             color: white;
@@ -100,168 +156,428 @@
             padding: 20px;
             margin-top: 40px;
         }
-
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        
+        /* New styles for filters */
+        .filter-container {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-        @media (max-width: 600px) {
-            .container {
-                grid-template-columns: repeat(1, 1fr);
-            }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
         }
-
-        /* Filters Section Styles */
-        .filters {
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .author-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .author-checkbox {
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            justify-content: center; /* Center elements horizontally */
-            margin: 20px;
-            gap: 20px;
-            width: 100%;
         }
-
-        .filters input[type="checkbox"] {
-            margin-right: 10px;
+        
+        .author-checkbox input {
+            margin-right: 8px;
         }
-
-        .filters label {
-            font-size: 16px;
-        }
-
-        .filters input[type="submit"], .filters .search-bar {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-
-        .filters input[type="submit"] {
+        
+        .filter-button {
+            padding: 10px 20px;
             background-color: #333;
             color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
         }
-
-        .filters input[type="submit"]:hover {
+        
+        .filter-button:hover {
             background-color: #555;
         }
-
-        .filters .search-bar {
-            border: 1px solid #ccc;
+        
+        .reset-filters {
+            padding: 10px 20px;
+            background-color: #777;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        
+        .reset-filters:hover {
+            background-color: #999;
+        }
+        
+        /* Mobile responsiveness for filters */
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .search-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
     <header>
         <h1>Our Collection of eBooks</h1>
     </header>
-
+    
     <nav>
-        <a href="Home.html">Home</a>
-        <a href="querybook.html">Books</a>
-        <a href="contact.html">Contact</a>
-        <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
-    </nav>
-
-    <!-- Filters Section -->
-    <form method="get" action="http://localhost:9999/ebookshop/query">
-        <div class="filters">
-            <label>Choose an author:</label>
-            <input type="checkbox" name="author" value="Tan Ah Teck" />Ah Teck
-            <input type="checkbox" name="author" value="Mohammad Ali" />Ali
-            <input type="checkbox" name="author" value="Kumar" />Kumar
-
-            <input type="text" class="search-bar" id="search-bar" placeholder="Search for books..." />
-            <input type="submit" value="Search" />
+        <div>
+            <a href="Home.html">Home</a>
+            <a href="querybook.html">Books</a>
+            <a href="contact.html">Contact</a>
         </div>
-    </form>
-
-    <div class="container" id="book-list">
-        <!--  Books dsiply here -->
+        <div>
+            <a href="cart.html" class="cart">Cart: <span id="cart-count">0</span> items</a>
+            <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
+            <span class="user-name" id="username">Welcome, User</span>
+        </div>
+    </nav>
+    
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Search by title, author...">
+        <button id="search-button" class="search-button">Search</button>
     </div>
-
+    
+    <!-- Filter section -->
+    <div class="filter-container">
+        <h3>Filter Books</h3>
+        <div class="filter-row">
+            <div class="filter-group">
+                <h3>Genre</h3>
+                <select id="genre-filter" class="filter-select">
+                    <option value="all">All Genres</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+              <!--Filter price-->
+                <h3>Price</h3>
+                <select id="price-filter" class="filter-select">
+                    <option value="none">No Sorting</option>
+                    <option value="asc">Price: Low to High</option>
+                    <option value="desc">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="filter-row">
+            <div class="filter-group">
+              <!--Filter author-->
+                <h3>Authors</h3>
+                <div id="author-list" class="author-list">
+                </div>
+            </div>
+        </div>
+        
+        <button id="apply-filters" class="filter-button">Apply Filters</button>
+        <button id="reset-filters" class="reset-filters">Reset Filters</button>
+    </div>
+    
+    <h2 style="text-align: center;">All Books</h2>
+    <div id="loading" class="loading">Loading books...</div>
+    <div class="container" id="book-list"></div>
+    
     <footer>
         <p>&copy; 2025 eBook Store | All rights reserved.</p>
     </footer>
-
+    
     <script>
+        let allBooks = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
+        let allAuthors = [];
+        let allGenres = [];
+        let currentSearchTerm = '';
+        
         function updateCart() {
             document.getElementById('cart-count').textContent = cart.length;
         }
-
-        function addToCart(bookTitle, price) {
-            cart.push({ title: bookTitle, price: price });
+        
+        function addToCart(title, price) {
+            cart.push({ title: title, price: price });
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCart();
-            alert(bookTitle + " has been added to your cart!");
+            alert(title + " has been added to your cart!");
         }
-
+        
+        async function fetchGenresAndAuthors() {
+            try {
+                // Fetch genres
+                const genresResponse = await fetch('http://localhost:9999/ebookshop/api/books', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'type=genres'
+                });
+                
+                if (!genresResponse.ok) {
+                    throw new Error(`HTTP error! Status: ${genresResponse.status}`);
+                }
+                
+                allGenres = await genresResponse.json();
+                populateGenreFilter(allGenres);
+                
+                // Fetch authors
+                const authorsResponse = await fetch('http://localhost:9999/ebookshop/api/books', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'type=authors'
+                });
+                
+                if (!authorsResponse.ok) {
+                    throw new Error(`HTTP error! Status: ${authorsResponse.status}`);
+                }
+                
+                allAuthors = await authorsResponse.json();
+                populateAuthorFilter(allAuthors);
+                
+            } catch (error) {
+                console.error('Error fetching filter data:', error);
+            }
+        }
+        
+        function populateGenreFilter(genres) {
+            const genreFilter = document.getElementById('genre-filter');
+            
+            // Keep the "All Genres" option and add new ones
+            genreFilter.innerHTML = '<option value="all">All Genres</option>';
+            
+            genres.forEach(genre => {
+                const option = document.createElement('option');
+                option.value = genre.name;
+                option.textContent = genre.name;
+                genreFilter.appendChild(option);
+            });
+        }
+        
+        function populateAuthorFilter(authors) {
+            const authorList = document.getElementById('author-list');
+            authorList.innerHTML = '';
+            
+            authors.forEach(author => {
+                const authorDiv = document.createElement('div');
+                authorDiv.className = 'author-checkbox';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'author-' + author.id;
+                checkbox.value = author.name;
+                
+                const label = document.createElement('label');
+                label.htmlFor = 'author-' + author.id;
+                label.textContent = author.name;
+                
+                authorDiv.appendChild(checkbox);
+                authorDiv.appendChild(label);
+                authorList.appendChild(authorDiv);
+            });
+        }
+        
+        async function fetchBooks() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('book-list').innerHTML = '';
+                
+                const response = await fetch('http://localhost:9999/ebookshop/api/books');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                allBooks = await response.json();
+                displayBooks(allBooks);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                document.getElementById('book-list').innerHTML = '<p class="no-results">Error loading books. Please try again later.</p>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function displayBooks(books) {
+            const bookList = document.getElementById('book-list');
+            bookList.innerHTML = '';
+            
+            if (books.length === 0) {
+                bookList.innerHTML = '<p class="no-results">No books found matching your search.</p>';
+                return;
+            }
+            
+            books.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'book';
+                
+                // Escape special characters to prevent JS injection
+                const safeTitle = book.title.replace(/"/g, '&quot;');
+                
+                bookDiv.innerHTML = `
+                    <img src="${book.image_url || 'https://via.placeholder.com/180x250'}" alt="${safeTitle}" onerror="this.src='https://via.placeholder.com/180x250'">
+                    <h3>${book.title}</h3>
+                    <p>By ${book.author_name}</p>
+                    <p><strong>$${parseFloat(book.price).toFixed(2)}</strong></p>
+                    <p class="genre-tag">${book.genre_name || ''}</p>
+                    <button onclick="addToCart('${safeTitle}', ${book.price})">Add to Cart</button>
+                `;
+                bookList.appendChild(bookDiv);
+            });
+        }
+        
+        function searchBooks() {
+            currentSearchTerm = document.getElementById('search-input').value.toLowerCase();
+            applyFilters();
+        }
+        
+        async function applyFilters() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('book-list').innerHTML = '';
+                
+                // Get filter values
+                const genreValue = document.getElementById('genre-filter').value;
+                const priceOrder = document.getElementById('price-filter').value;
+                
+                // Get selected authors
+                const authorCheckboxes = document.querySelectorAll('#author-list input[type="checkbox"]:checked');
+                const selectedAuthors = Array.from(authorCheckboxes).map(cb => cb.value);
+                
+                // Build query string
+                let queryParams = [];
+                
+                if (genreValue && genreValue !== 'all') {
+                    queryParams.push(`genre=${encodeURIComponent(genreValue)}`);
+                }
+                
+                if (priceOrder && priceOrder !== 'none') {
+                    queryParams.push(`priceOrder=${encodeURIComponent(priceOrder)}`);
+                }
+                
+                selectedAuthors.forEach(author => {
+                    queryParams.push(`author=${encodeURIComponent(author)}`);
+                });
+                
+                const queryString = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+                
+                // Fetch filtered books
+                const response = await fetch(`http://localhost:9999/ebookshop/api/books${queryString}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                let filteredBooks = await response.json();
+                
+                // Apply client-side search filter if there's a search term
+                if (currentSearchTerm) {
+                    filteredBooks = filteredBooks.filter(book => 
+                        book.title.toLowerCase().includes(currentSearchTerm) || 
+                        book.author_name.toLowerCase().includes(currentSearchTerm)
+                    );
+                }
+                
+                displayBooks(filteredBooks);
+                
+            } catch (error) {
+                console.error('Error applying filters:', error);
+                document.getElementById('book-list').innerHTML = '<p class="no-results">Error applying filters. Please try again later.</p>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function resetFilters() {
+            // Reset genre filter
+            document.getElementById('genre-filter').value = 'all';
+            
+            // Reset price filter
+            document.getElementById('price-filter').value = 'none';
+            
+            // Uncheck all author checkboxes
+            const authorCheckboxes = document.querySelectorAll('#author-list input[type="checkbox"]');
+            authorCheckboxes.forEach(cb => cb.checked = false);
+            
+            // Clear search input
+            document.getElementById('search-input').value = '';
+            currentSearchTerm = '';
+            
+            // Fetch all books again
+            fetchBooks();
+        }
+        
+        // Sign-out functionality
+        document.getElementById('signOutBtn').addEventListener('click', () => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('cart'); // Also clear cart on sign out
+            window.location.href = 'login.html';
+        });
+        
+        // Display username if stored
+        function displayUsername() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.name) {
+                document.getElementById('username').textContent = `Welcome, ${user.name}`;
+            }
+        }
+        
         window.onload = function () {
             updateCart();
-
-            const books = [
-                { title: "Solar system", author: "Tan Ah Teck", price: 10.99, category: "classic", image: "https://m.media-amazon.com/images/I/81wkQsjbo5L._AC_UL320_.jpg" },
-                { title: "The Little Book of Mindfulness", author: "Mohammad Ali", price: 8.99, category: "classic", image: "https://m.media-amazon.com/images/I/71bt4N3tzAL._AC_UL320_.jpg" },
-                { title: "Amazon Unbound", author: "Kumar", price: 9.99, category: "fiction", image: "https://m.media-amazon.com/images/I/71cYdt99HxL._AC_UL320_.jpg" },
-                { title: "BARACK OBAMA", author: "Tan Ah Teck", price: 7.99, category: "classic", image: "https://m.media-amazon.com/images/I/91+NBrXG-PL._AC_UL320_.jpg" },
-                { title: "ADUL COLORING BOOK", author: "Mohammad Ali", price: 11.49, category: "classic", image: "https://m.media-amazon.com/images/I/71R1dKjpyoL._AC_UL320_.jpg" },
-                { title: "THE ADOPTED DRAGON", author: "Kumar", price: 12.99, category: "classic", image: "https://m.media-amazon.com/images/I/71x9AlE-OrL._AC_UL320_.jpg" },
-                { title: "BOOK CLUO", author: "Tan Ah Teck", price: 9.49, category: "fiction", image: "https://m.media-amazon.com/images/I/712uz1sSWAL._AC_UL320_.jpg" },
-                { title: "A DRAGON HAS TO PERSEVRE", author: "Mohammad Ali", price: 10.49, category: "fiction", image: "https://m.media-amazon.com/images/I/71taowAjG+L._AC_UL320_.jpg" },
-                { title: "THE SUBTLE ART OF NOT GIVE A F*CK", author: "Kumar", price: 8.99, category: "fiction", image: "https://m.media-amazon.com/images/I/71QKQ9mwV7L._AC_UL320_.jpg" },
-                { title: "The Psychology of Money", author: "Tan Ah Teck", price: 9.99, category: "classic", image: "https://m.media-amazon.com/images/I/81wZXiu4OiL._AC._SR360,460.jpg" },
-                { title: "Atomic Habit", author: "Mohammad Ali", price: 9.49, category: "fiction", image: "https://m.media-amazon.com/images/I/81F90H7hnML._AC._SR360,460.jpg" },
-                { title: "THE WILD ROBOT PROTECTS", author: "Kumar", price: 7.99, category: "classic", image: "https://m.media-amazon.com/images/I/71gCPEf-MiL._AC._SR360,460.jpg" },
-                { title: "THE FEARLESSORGANIZATION", author: "Tan Ah Teck", price: 15.99, category: "fiction", image: "https://m.media-amazon.com/images/I/716QNCYUMAL._AC._SR360,460.jpg" },
-                { title: ">BILL GATES", author: "Mohammad Ali", price: 8.49, category: "classic", image: "https://m.media-amazon.com/images/I/71yR+jQLqXL._AC._SR360,460.jpg" },
-                { title: "THE LET THEM", author: "Kumar", price: 8.99, category: "classic", image: "https://m.media-amazon.com/images/I/91I1KDnK1kL._AC._SR360,460.jpg" }
-            ];
-
-            const bookList = document.getElementById('book-list');
-
-            // Display all books
-            function displayBooks(filteredBooks) {
-                bookList.innerHTML = '';
-                filteredBooks.forEach(book => {
-                    let bookItem = document.createElement('div');
-                    bookItem.classList.add('book');
-                    bookItem.innerHTML = `
-                        <img src="${book.image}" alt="${book.title}">
-                        <h3>${book.title}</h3>
-                        <p>By ${book.author}</p>
-                        <p><strong>$${book.price.toFixed(2)}</strong></p>
-                        <button onclick="addToCart('${book.title}', ${book.price})">Add to Cart</button>
-                    `;
-                    bookList.appendChild(bookItem);
-                });
-            }
-
-            // Initial display beforw Filter
-            displayBooks(books);
-
-            // Filter books by author and search 
-            document.getElementById('search-bar').addEventListener('input', function() {
-                let searchTerm = this.value.toLowerCase();
-                let selectedAuthors = Array.from(document.querySelectorAll('.filters input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-                
-                let filteredBooks = books.filter(book => {
-                    let matchesSearch = book.title.toLowerCase().includes(searchTerm);
-                    let matchesAuthor = selectedAuthors.length === 0 || selectedAuthors.includes(book.author);
-                    return matchesSearch && matchesAuthor;
-                });
-
-                displayBooks(filteredBooks);
+            fetchBooks();
+            fetchGenresAndAuthors();
+            displayUsername();
+            
+            // Add event listeners
+            document.getElementById('search-button').addEventListener('click', searchBooks);
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBooks();
+                }
             });
-
-            // Make books available globally
-            window.books = books;
+            
+            document.getElementById('apply-filters').addEventListener('click', applyFilters);
+            document.getElementById('reset-filters').addEventListener('click', resetFilters);
         };
     </script>
-
 </body>
 </html>

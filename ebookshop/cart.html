@@ -41,8 +41,10 @@
             justify-content: space-between;
             align-items: center;
         }
-        .cart-item input[type="checkbox"] {
-            margin-right: 10px;
+        .cart-item input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
         }
         .checkout-button {
             background-color: #2ecc71;
@@ -56,15 +58,20 @@
         .checkout-button:hover {
             background-color: #27ae60;
         }
-        .input-field {
-            margin-bottom: 10px;
+        .remove-button {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
         }
-        .input-field input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .remove-button:hover {
+            background-color: #d13d3d;
+        }
+        .total-price {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -83,100 +90,102 @@
 
     <main>
         <h2>Your Cart</h2>
-
         <div id="cart-items"></div>
-
-        <h3>Total: $<span id="total-price">0.00</span></h3>
-
-        <div>
-            <h3>Checkout Information</h3>
-            <div class="input-field">
-                <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Enter your name" required>
-            </div>
-            <div class="input-field">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-            </div>
-            <div class="input-field">
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" placeholder="Enter your phone number" required>
-            </div>
-        </div>
+        <h3 class="total-price">Total: $<span id="total-price">0.00</span></h3>
 
         <button class="checkout-button" onclick="checkout()">Checkout</button>
-        <button class="checkout-button" onclick="removeSelectedItems()">Remove Selected Items</button>
     </main>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        function updateCartDisplay() {
-            let cartItemsDiv = document.getElementById('cart-items');
-            cartItemsDiv.innerHTML = '';
-
-            let totalPrice = 0;
-            cart.forEach((book, index) => {
-                let bookDiv = document.createElement('div');
-                bookDiv.classList.add('cart-item');
-                bookDiv.innerHTML = `
-                    <div>
-                        <h3>${book.title}</h3>
-                        <p>Price: $${book.price.toFixed(2)}</p>
-                    </div>
-                    <input type="checkbox" id="item-${index}">
-                `;
-                cartItemsDiv.appendChild(bookDiv);
-
-                totalPrice += book.price;
-            });
-
-            document.getElementById('total-price').textContent = totalPrice.toFixed(2);
-            document.getElementById('cart-count').textContent = cart.length;
-        }
-
-        function removeSelectedItems() {
-            const itemsToRemove = [];
-            cart.forEach((book, index) => {
-                const checkbox = document.getElementById(`item-${index}`);
-                if (checkbox && checkbox.checked) {
-                    itemsToRemove.push(index);
-                }
-            });
-
-            // Remove selected items from the cart
-            itemsToRemove.reverse().forEach(index => {
-                cart.splice(index, 1);
-            });
-
-            localStorage.setItem('cart', JSON.stringify(cart)); // Update cart in localStorage
-            updateCartDisplay();
-        }
-
-        function checkout() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-
-            if (!name || !email || !phone) {
-                alert("Please fill in all the details before checking out.");
+        async function fetchCart() {
+            const userId = localStorage.getItem("userId"); // Retrieve user ID
+            const response = await fetch(`http://localhost:9999/ebookshop/cart.html/getCart?userId=${userId}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                document.getElementById("cart-items").innerHTML = `<p>${data.error}</p>`;
                 return;
             }
 
-            if (cart.length === 0) {
-                alert("Your cart is empty! Please add items before checking out.");
+            let cartItemsHtml = "";
+            let totalPrice = 0;
+
+            data.cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+                cartItemsHtml += `
+                    <div class="cart-item">
+                        <div>
+                            <h3>${item.title}</h3>
+                            <p>Price: $${item.price.toFixed(2)}</p>
+                            <p>
+                                Quantity: 
+                                <button onclick="updateQuantity(${item.bookId}, ${item.quantity - 1})">-</button>
+                                <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.bookId}, this.value)">
+                                <button onclick="updateQuantity(${item.bookId}, ${item.quantity + 1})">+</button>
+                            </p>
+                        </div>
+                        <button class="remove-button" onclick="removeFromCart(${item.bookId})">Remove</button>
+                    </div>`;
+            });
+
+            document.getElementById("cart-items").innerHTML = cartItemsHtml;
+            document.getElementById("total-price").textContent = totalPrice.toFixed(2);
+        }
+
+        async function updateQuantity(bookId, newQuantity) {
+            if (newQuantity < 1) {
+                removeFromCart(bookId);
+                return;
+            }
+
+            const userId = localStorage.getItem("userId");
+
+            await fetch(`http://localhost:9999/ebookshop/cart.html/updateCart`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `userId=${userId}&bookId=${bookId}&quantity=${newQuantity}`
+            });
+
+            fetchCart(); // Refresh the cart
+        }
+
+        async function removeFromCart(bookId) {
+            const userId = localStorage.getItem("userId");
+
+            await fetch(`http://localhost:9999/ebookshop/cart.html/removeCartItem`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `userId=${userId}&bookId=${bookId}`
+            });
+
+            fetchCart(); // Refresh the cart
+        }
+
+        async function checkout() {
+            const userId = localStorage.getItem("userId");
+            
+            if (!userId) {
+                alert("Please log in to proceed to checkout.");
+                return;
+            }
+
+            const response = await fetch(`http://localhost:9999/ebookshop/checkout?userId=${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert("Checkout successful! Your order has been placed.");
+                fetchCart(); // Refresh cart after checkout
             } else {
-                // For now, simulate a checkout success and clear the cart
-                alert(`Checkout successful!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nYour order is complete.`);
-                cart = [];
-                localStorage.setItem('cart', JSON.stringify(cart)); // Clear cart from localStorage
-                updateCartDisplay();
+                alert("Error: " + data.error);
             }
         }
 
-        window.onload = function() {
-            updateCartDisplay();
-        };
+        window.onload = fetchCart;
     </script>
 
 </body>
