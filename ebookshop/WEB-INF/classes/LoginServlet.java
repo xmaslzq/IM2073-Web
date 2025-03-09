@@ -26,11 +26,11 @@ public class LoginServlet extends HttpServlet {
             // Step 1: Allocate a database connection
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/ebookshop?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
-                "myuser", "xxxx");  // Replace with your database credentials
+                "user", "xxxx");  // Replace with your database credentials
 
             //Prepare SQL statement to check credentials
             PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM users WHERE username = ? AND password = ?")
+                "SELECT * FROM user WHERE user_name = ? AND password = ?")
         ) {
             stmt.setString(1, username);
             stmt.setString(2, password);

@@ -44,7 +44,7 @@ public class QueryServlet extends HttpServlet {
          // Step 1: Allocate a database 'Connection' object
          Connection conn = DriverManager.getConnection(
                "jdbc:mysql://localhost:3306/ebookshop?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
-               "myuser", "xxxx");   // For MySQL
+               "user", "xxxx");   // For MySQL
                // The format is: "jdbc:mysql://hostname:port/databaseName", "username", "password"
 
          // Step 2: Allocate a 'Statement' object in the Connection
@@ -53,7 +53,7 @@ public class QueryServlet extends HttpServlet {
          // Step 3: Execute a SQL SELECT query
          // === Form the SQL command - BEGIN ===
         String[] authors = request.getParameterValues("author");  // Returns an array of Strings
-         String sqlStr = "SELECT * FROM books WHERE author IN (";
+         String sqlStr = "SELECT * FROM book WHERE author IN (";
          for (int i = 0; i < authors.length; ++i) {
             if (i < authors.length - 1) {
                sqlStr += "'" + authors[i] + "', ";  // need a commas
