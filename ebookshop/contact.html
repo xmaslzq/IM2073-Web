@@ -38,14 +38,6 @@
             background-color: #575757;
         }
 
-        .cart {
-            float: right;
-            padding: 15px;
-            background-color: #575757;
-            color: white;
-            border-radius: 5px;
-        }
-
         .container {
             width: 60%;
             margin: 30px auto;
@@ -60,29 +52,21 @@
             color: #333;
         }
 
-        p {
-            text-align: center;
-            color: #666;
+        .reviews {
+            margin-top: 30px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .contact-details {
-            text-align: center;
-            margin-top: 20px;
+        .review-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
         }
 
-        .contact-details p {
-            font-size: 18px;
-            margin: 5px 0;
-        }
-
-        .contact-details a {
-            color: #333;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .contact-details a:hover {
-            text-decoration: underline;
+        .review-item:last-child {
+            border-bottom: none;
         }
 
         .feedback-form {
@@ -121,6 +105,16 @@
             background-color: #555;
         }
 
+        .login-status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 5px;
+            display: none;
+        }
+
         footer {
             background-color: #333;
             color: white;
@@ -144,23 +138,20 @@
     </nav>
 
     <div class="container">
-        <h2>Get in Touch</h2>
-        <p>We’d love to hear from you! Feel free to reach out with any questions or feedback.</p>
-
-        <div class="contact-details">
-            <p><strong>Email:</strong> <a href="mailto:support@ebookstore.com">support@ebookstore.com</a></p>
-            <p><strong>Phone:</strong> +1 234 567 890</p>
-            <p><strong>Address:</strong> 123 Book Street, Library City, BK 56789</p>
+        <div id="login-status" class="login-status">
+            You must be logged in to submit a review.
+        </div>
+        
+        <h2>Customer Reviews</h2>
+        <div class="reviews" id="reviews">
+            <p>Loading reviews...</p>
         </div>
 
         <div class="feedback-form">
             <h3>Leave a Feedback</h3>
             <form id="feedbackForm">
-                <label for="name">Your Name:</label>
-                <input type="text" id="name" required>
-
-                <label for="email">Your Email:</label>
-                <input type="email" id="email" required>
+                <label for="rating">Rating (1-5):</label>
+                <input type="number" id="rating" min="1" max="5" required>
 
                 <label for="message">Your Message:</label>
                 <textarea id="message" rows="5" required></textarea>
@@ -175,31 +166,96 @@
     </footer>
 
     <script>
-        let cart = [];
-
-        function updateCart() {
-            document.getElementById('cart-count').textContent = cart.length;
+        // Check if user is logged in
+        function checkLoginStatus() {
+            fetch('http://localhost:9999/ebookshop/CheckLoginServlet')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.loggedIn) {
+                        document.getElementById('login-status').style.display = 'block';
+                        document.getElementById('feedbackForm').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking login status:', error);
+                });
         }
 
-        window.onload = function() {
-            cart = JSON.parse(localStorage.getItem('cart')) || [];
-            updateCart();
-        };
+        function fetchReviews() {
+            fetch('http://localhost:9999/ebookshop/ReviewServlet')
+                .then(response => response.json())
+                .then(data => {
+                    let reviewContainer = document.getElementById('reviews');
+                    reviewContainer.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        reviewContainer.innerHTML = "<p>No reviews yet. Be the first to leave a review!</p>";
+                        return;
+                    }
+                    
+                    data.forEach(review => {
+                        // Create star rating display
+                        let stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                        
+                        reviewContainer.innerHTML += `
+                            <div class="review-item">
+                                <strong>Rating:</strong> ${stars}<br>
+                                <strong>Comment:</strong> ${review.comment}<br>
+                                <small>Posted on: ${review.created_at}</small>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching reviews:', error);
+                    document.getElementById('reviews').innerHTML = "<p>Failed to load reviews. Please try again later.</p>";
+                });
+        }
 
         document.getElementById('feedbackForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            let name = document.getElementById('name').value;
-            let email = document.getElementById('email').value;
-            let message = document.getElementById('message').value;
+            const rating = parseInt(document.getElementById('rating').value);
+            const comment = document.getElementById('message').value;
 
-            if (name && email && message) {
-                alert("Thank you for your feedback, " + name + "!");
-                document.getElementById('feedbackForm').reset();
-            } else {
-                alert("Please fill in all fields.");
+            // Validate inputs
+            if (isNaN(rating) || rating < 1 || rating > 5) {
+                alert('Please enter a valid rating between 1 and 5');
+                return;
             }
+
+            if (!comment.trim()) {
+                alert('Please enter a comment');
+                return;
+            }
+
+            // Send data as JSON
+            fetch('http://localhost:9999/ebookshop/ReviewServlet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    rating: rating, 
+                    comment: comment 
+                }),
+                credentials: 'include' // Important: Include cookies for session
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message.includes('successfully')) {
+                    document.getElementById('feedbackForm').reset();
+                    fetchReviews();
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error);
+                alert('Error submitting review. Please try again later.');
+            });
         });
+
+        // Initialize the page
+        checkLoginStatus();
+        fetchReviews();
     </script>
 
 </body>
