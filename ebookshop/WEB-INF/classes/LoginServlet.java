@@ -30,16 +30,19 @@ public class LoginServlet extends HttpServlet {
 
             //Prepare SQL statement to check credentials
             PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM user WHERE user_name = ? AND password = ?")
+                "SELECT user_id FROM user WHERE user_name = ? AND password = ?")
         ) {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                int userId = rs.getInt("user_id"); // Get user_id
+
                 // Valid credentials, create a session
                 HttpSession session = request.getSession();
                 session.setAttribute("username", username);
+                session.setAttribute("user_id", userId);  // Store user_id in session
                 response.sendRedirect("Home.html");  // Redirect to homepage
             } else {
                 // Invalid credentials, redirect with an error message
