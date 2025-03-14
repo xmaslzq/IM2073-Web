@@ -223,18 +223,15 @@ DROP TABLE IF EXISTS `review`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `review` (
   `review_id` int NOT NULL AUTO_INCREMENT,
-  `book_id` int NOT NULL,
   `user_id` int NOT NULL,
   `rating` int DEFAULT NULL,
   `comment` text,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`review_id`),
-  KEY `book_id` (`book_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `review_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`book_id`) ON DELETE CASCADE,
   CONSTRAINT `review_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `review_chk_1` CHECK ((`rating` between 1 and 5))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -243,6 +240,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
+INSERT INTO `review` VALUES (1,1,5,'Good book. Quick delivery.','2025-03-14 03:50:30'),(2,1,3,'Good delivery. So-so book.','2025-03-14 10:58:19');
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-10  2:48:34
+-- Dump completed on 2025-03-14 11:15:09
